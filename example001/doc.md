@@ -21,7 +21,3 @@ $ python3 hello.py
 输出结果是  
 ```Hello World!```
 
-
-
-
-<meta http-equiv="refresh" content="0.5">
