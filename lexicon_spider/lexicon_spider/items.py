@@ -8,7 +8,10 @@
 import scrapy
 
 
-class LexiconSpiderItem(scrapy.Item):
+class DictItem(scrapy.Item):
     # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+    main_cate_name = scrapy.Field()
+    sub_cate_name = scrapy.Field()
+    dict_name = scrapy.Field()
+    dict_body = scrapy.Field()
+

@@ -2,6 +2,7 @@
 import scrapy
 import urlparse
 
+from lexicon_spider.items import DictItem
 
 class SogouSpider(scrapy.Spider):
     name = 'sogou'
@@ -24,6 +25,7 @@ class SogouSpider(scrapy.Spider):
             dict_name = dict_info.xpath('.//div/a/text()').extract()[0]
             download_url = dict_info.xpath('.//following-sibling::div/div/a/@href').extract()[0]
             yield {'main_cate_name': response.meta['main_cate_name'], 'sub_cate_name': response.meta['sub_cate_name'], 'dict_name': dict_name, 'download_url': download_url}
+            yield scrapy.Request(download_url, callback=self.download_dict, meta={'main_cate_name': response.meta['main_cate_name'], 'sub_cate_name': response.meta['sub_cate_name'], 'dict_name': dict_name})
 
         for page_a in response.xpath('.//*[@id="dict_page_list"]/ul/li'):
             try:
@@ -36,3 +38,5 @@ class SogouSpider(scrapy.Spider):
                 target_url = urlparse.urljoin(self.base_url, page_url)
                 yield scrapy.Request(target_url, callback=self.parse_dict_list, meta={'main_cate_name': response.meta['main_cate_name'], 'sub_cate_name': response.meta['sub_cate_name']})
 
+    def download_dict(self, response):
+        yield DictItem(main_cate_name=response.meta['main_cate_name'], sub_cate_name=response.meta['sub_cate_name'], dict_name=response.meta['dict_name'], dict_body=response.body)
