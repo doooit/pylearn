@@ -8,7 +8,7 @@
 import scrapy
 
 
-class DictItem(scrapy.Item):
+class SogouDictItem(scrapy.Item):
     # define the fields for your item here like:
     main_cate_name = scrapy.Field()
     sub_cate_name = scrapy.Field()

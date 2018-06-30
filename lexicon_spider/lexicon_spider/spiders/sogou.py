@@ -2,7 +2,7 @@
 import scrapy
 import urlparse
 
-from lexicon_spider.items import DictItem
+from lexicon_spider.items import SogouDictItem
 
 class SogouSpider(scrapy.Spider):
     name = 'sogou'
