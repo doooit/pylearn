@@ -16,7 +16,7 @@ def assure_exists(path):
 
 class LexiconSpiderPipeline(object):
     def process_item(self, item, spider):
-        if isinstance(item, DictItem):
+        if isinstance(item, SogouDictItem):
             dict_path = os.path.join('.', 'SogouDict', item['main_cate_name'], item['sub_cate_name'])
             dict_file = os.path.join('.', 'SogouDict', item['main_cate_name'], item['sub_cate_name'], '%s.scel'%item['dict_name'])
             assure_exists(dict_path)
