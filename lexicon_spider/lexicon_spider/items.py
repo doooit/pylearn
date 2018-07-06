@@ -10,8 +10,9 @@ import scrapy
 
 class SogouDictItem(scrapy.Item):
     # define the fields for your item here like:
-    main_cate_name = scrapy.Field()
-    sub_cate_name = scrapy.Field()
+    first_cate_name = scrapy.Field()
+    second_cate_name = scrapy.Field()
+    third_cate_name = scrapy.Field()
     dict_name = scrapy.Field()
     dict_body = scrapy.Field()
 
