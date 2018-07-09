@@ -101,7 +101,6 @@ def main():
         where b.pop_id is null
     """
     popids_name = os.path.join(tempfile.mkdtemp(), 'popids.txt')
-    #with HiveClient(db_host='node6', port=10002, user='hadoop', password='hadoop', database='default', authMechanism='PLAIN') as hive_client, open('popids.txt', 'wb') as jsonfp:
     new_pop_cn = 0
     with HiveClient(db_host='master2', port=10000, user='hadoop', password='hadoop', database='default', authMechanism='PLAIN') as hive_client, open(popids_name, 'wb') as jsonfp:
         result = hive_client.query(query_new_ids_sql)
