@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import json
 import os
@@ -31,8 +31,9 @@ class HiveClient(object):
         if self.conn:
             self.conn.close()
     
-    def format_sql(self, sql):
+    def format_sql(self, sql, new_params=None):
         params = {
+            'INTERVAL': 0,
             'TODAY': datetime.now().strftime('%Y-%m-%d'),
             'today': datetime.now().strftime('%Y%m%d'),
             'YESTERDAY': (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d'),
@@ -41,27 +42,30 @@ class HiveClient(object):
             'tomorrow': (datetime.now() + timedelta(days=1)).strftime('%Y%m%d')
         }
 
+        params.update(new_params)
+
         if sql:
             for argkey, argvalue in params.items():
                 sql = sql.replace('${' + argkey + '}', str(argvalue))
 
+        print(sql)
+
         return sql
     
-    def query(self, sql):
+    def query(self, sql, params={}):
         """
         query
         """
         with self.conn.cursor() as cursor:
-            cursor.execute(self.format_sql(sql))
+            cursor.execute(self.format_sql(sql, params))
             return cursor.fetch()
 
-    def execute(self, sql):
+    def execute(self, sql, params={}):
         """
         execute
         """
         with self.conn.cursor() as cursor:
-            cursor.execute(self.format_sql(sql))
-        
+            cursor.execute(self.format_sql(sql, params))
 
     def close(self):
         """
@@ -91,7 +95,7 @@ def main():
           select
            pop_id 
           from dw_db.dw_pinyin_promotion_popwnd 
-          where p_dt='${YESTERDAY}' 
+          where p_dt between date_sub('${YESTERDAY}', ${INTERVAL}) and '${YESTERDAY}'
           and pop_id is not null 
           group by
            pop_id
@@ -114,7 +118,7 @@ def main():
 
     print('fetch %d new pop info, load into table.' % new_pop_cn)
     # load into temp_table
-    load_sql = "load data local inpath '%s' overwrite into table temp_db.dim_pinyin_popwnd" % popids_name
+    load_sql = "load data local inpath '%s' overwrite into table dim_db.dim_pinyin_popwnd_temp" % popids_name
     p = subprocess.Popen('hive -e "%s" ' % load_sql, shell=True)
     p.wait()
     if p.returncode != 0:
